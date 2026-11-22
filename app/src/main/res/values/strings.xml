@@ -1,3 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Song Lister</string>
+    <string name="app_name">SongLister</string>
+
+    <!-- Common -->
+    <string name="action_back">Back</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_reset">Reset</string>
+    <string name="action_apply_filters">Apply Filters</string>
+    <string name="option_any">Any</string>
+    <string name="option_yes">Yes</string>
+    <string name="option_no">No</string>
+    <string name="value_unknown">Unknown</string>
+    <string name="value_unspecified">Unspecified</string>
+    <string name="value_supported">Supported</string>
+
+    <!-- Home Screen -->
+    <string name="home_refresh_description">Refresh song lists</string>
+    <string name="home_choose_game_title">Choose a Game</string>
+    <string name="home_choose_game_subtitle">Select a library to search and filter songs offline.</string>
+    <string name="home_ultrastar_subtitle">Karaoke &amp; vocal tracks</string>
+    <string name="home_yarg_subtitle">Full-band rhythm charts</string>
+    <string name="home_sync_checking">Checking for song list updates…</string>
+    <string name="home_sync_error">Could not sync one or more lists. Tap refresh to retry.</string>
+    <string name="home_sync_offline">Offline mode — showing cached local song lists.</string>
+    <string name="home_sync_ready">Song libraries are synced and ready offline.</string>
+    <string name="home_songs_cached">%1$s songs cached</string>
+    <string name="home_download_failed">Download failed</string>
+    <string name="home_not_downloaded">Not downloaded yet</string>
+    <string name="home_open_game_description">Open %1$s</string>
+
+    <!-- Song List Screen -->
+    <string name="list_title">%1$s Songs</string>
+    <string name="list_refresh_description">Refresh songs</string>
+    <string name="list_search_placeholder">Search song or artist</string>
+    <string name="list_clear_search_description">Clear search</string>
+    <string name="list_open_filters_description">Open filters</string>
+    <string name="list_songs_count">%1$s songs</string>
+    <string name="list_clear_filters">Clear filters (%1$d)</string>
+    <string name="list_empty_filtered_title">No matching songs</string>
+    <string name="list_empty_title">No songs available</string>
+    <string name="list_empty_filtered_subtitle">Try adjusting your search or filter criteria.</string>
+    <string name="list_empty_subtitle">Tap refresh to download the song list.</string>
+    <string name="list_clear_all">Clear search &amp; filters</string>
+
+    <!-- Filter Bottom Sheet -->
+    <string name="filter_ultrastar_title">UltraStar Filters</string>
+    <string name="filter_yarg_title">YARG Filters</string>
+    <string name="filter_genre">Genre</string>
+    <string name="filter_language">Language</string>
+    <string name="filter_album">Album</string>
+    <string name="filter_album_placeholder">Filter by album name</string>
+    <string name="filter_format">Format</string>
+    <string name="filter_year_range">Year Range</string>
+    <string name="filter_year_from">From</string>
+    <string name="filter_year_to">To</string>
+    <string name="filter_year_min_hint">e.g. 1980</string>
+    <string name="filter_year_max_hint">e.g. 2025</string>
+    <string name="filter_duet">Duet</string>
+    <string name="filter_solo">Solo</string>
+    <string name="filter_instruments_title">Instruments &amp; Minimum Difficulty</string>
+    <string name="filter_difficulty_min">Difficulty %1$d+</string>
+    <string name="filter_difficulty_any">Any difficulty</string>
+    <string name="filter_tier_plus">%1$d+</string>
+
+    <!-- Instruments & Badges -->
+    <string name="instrument_guitar">Guitar</string>
+    <string name="instrument_bass">Bass</string>
+    <string name="instrument_drums">Drums</string>
+    <string name="instrument_keys">Keys</string>
+    <string name="instrument_vocals">Vocals</string>
+    <string name="badge_instrument_level">%1$s %2$d</string>
+
+    <!-- Song Detail Screen -->
+    <string name="detail_title">%1$s Song Details</string>
+    <string name="detail_not_found">Song not found.</string>
+    <string name="detail_section_attributes">Track Attributes</string>
+    <string name="detail_section_metadata">Track Metadata</string>
+    <string name="detail_section_instruments">Instruments &amp; Difficulty</string>
+    <string name="detail_section_sources">Source Files (%1$d)</string>
+    <string name="detail_section_chart_source">Chart Source</string>
+    <string name="detail_label_language">Language</string>
+    <string name="detail_label_genre">Genre</string>
+    <string name="detail_label_year">Year</string>
+    <string name="detail_label_duration">Duration</string>
+    <string name="detail_label_solo">Solo</string>
+    <string name="detail_label_duet">Duet</string>
+    <string name="detail_label_album">Album</string>
+    <string name="detail_label_format">Format</string>
+    <string name="detail_instrument_tier">Tier %1$d / 6</string>
+    <string name="detail_instrument_not_charted">Not charted</string>
+    <string name="detail_duration_with_seconds">%1$s (%2$ds)</string>
+    <string name="detail_duration_seconds_only">%1$ds</string>
 </resources>

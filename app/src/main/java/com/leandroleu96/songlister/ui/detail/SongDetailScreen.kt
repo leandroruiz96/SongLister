@@ -32,10 +32,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.leandroleu96.songlister.R
 import com.leandroleu96.songlister.core.GameType
 import com.leandroleu96.songlister.data.local.entity.UltraStarSongEntity
 import com.leandroleu96.songlister.data.local.entity.YargSongEntity
@@ -68,12 +70,14 @@ fun SongDetailScreenContent(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text("${gameType.displayName} Song Details") },
+                title = {
+                    Text(stringResource(R.string.detail_title, gameType.displayName))
+                },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
+                            contentDescription = stringResource(R.string.action_back),
                         )
                     }
                 },
@@ -92,7 +96,7 @@ fun SongDetailScreenContent(
 
                 SongDetailUiState.NotFound -> {
                     Text(
-                        text = "Song not found.",
+                        text = stringResource(R.string.detail_not_found),
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.align(Alignment.Center),
                     )
@@ -110,9 +114,13 @@ fun SongDetailScreenContent(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun UltraStarDetailContent(song: UltraStarSongEntity) {
+    val unknown = stringResource(R.string.value_unknown)
+    val unspecified = stringResource(R.string.value_unspecified)
+    val supported = stringResource(R.string.value_supported)
+    val noLabel = stringResource(R.string.option_no)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -140,16 +148,19 @@ private fun UltraStarDetailContent(song: UltraStarSongEntity) {
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 Text(
-                    text = "Track Attributes",
+                    text = stringResource(R.string.detail_section_attributes),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                 )
-                DetailRow("Language", song.language ?: "Unknown")
-                DetailRow("Genre", song.genre ?: "Unspecified")
-                DetailRow("Year", song.year?.toString() ?: "Unknown")
-                DetailRow("Duration", formatDuration(song.songLength, song.songLengthMs))
-                DetailRow("Solo", if (song.solo) "Supported" else "No")
-                DetailRow("Duet", if (song.duet) "Supported" else "No")
+                DetailRow(stringResource(R.string.detail_label_language), song.language ?: unknown)
+                DetailRow(stringResource(R.string.detail_label_genre), song.genre ?: unspecified)
+                DetailRow(stringResource(R.string.detail_label_year), song.year?.toString() ?: unknown)
+                DetailRow(
+                    stringResource(R.string.detail_label_duration),
+                    formatDuration(song.songLength, song.songLengthMs),
+                )
+                DetailRow(stringResource(R.string.detail_label_solo), if (song.solo) supported else noLabel)
+                DetailRow(stringResource(R.string.detail_label_duet), if (song.duet) supported else noLabel)
             }
         }
 
@@ -163,7 +174,7 @@ private fun UltraStarDetailContent(song: UltraStarSongEntity) {
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Text(
-                        text = "Source Files (${song.sources.size})",
+                        text = stringResource(R.string.detail_section_sources, song.sources.size),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -184,6 +195,9 @@ private fun UltraStarDetailContent(song: UltraStarSongEntity) {
 
 @Composable
 private fun YargDetailContent(song: YargSongEntity) {
+    val unknown = stringResource(R.string.value_unknown)
+    val unspecified = stringResource(R.string.value_unspecified)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -211,15 +225,15 @@ private fun YargDetailContent(song: YargSongEntity) {
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 Text(
-                    text = "Instruments & Difficulty",
+                    text = stringResource(R.string.detail_section_instruments),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                 )
-                InstrumentDifficultyRow("Guitar", song.guitarLevel)
-                InstrumentDifficultyRow("Bass", song.bassLevel)
-                InstrumentDifficultyRow("Drums", song.drumsLevel)
-                InstrumentDifficultyRow("Keys", song.keysLevel)
-                InstrumentDifficultyRow("Vocals", song.vocalsLevel)
+                InstrumentDifficultyRow(stringResource(R.string.instrument_guitar), song.guitarLevel)
+                InstrumentDifficultyRow(stringResource(R.string.instrument_bass), song.bassLevel)
+                InstrumentDifficultyRow(stringResource(R.string.instrument_drums), song.drumsLevel)
+                InstrumentDifficultyRow(stringResource(R.string.instrument_keys), song.keysLevel)
+                InstrumentDifficultyRow(stringResource(R.string.instrument_vocals), song.vocalsLevel)
             }
         }
 
@@ -232,15 +246,18 @@ private fun YargDetailContent(song: YargSongEntity) {
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 Text(
-                    text = "Track Metadata",
+                    text = stringResource(R.string.detail_section_metadata),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                 )
-                DetailRow("Album", song.album ?: "Unknown")
-                DetailRow("Genre", song.genre ?: "Unspecified")
-                DetailRow("Year", song.year?.toString() ?: "Unknown")
-                DetailRow("Duration", formatDuration(song.songLength, song.songLengthMs))
-                DetailRow("Format", song.format?.uppercase() ?: "Unknown")
+                DetailRow(stringResource(R.string.detail_label_album), song.album ?: unknown)
+                DetailRow(stringResource(R.string.detail_label_genre), song.genre ?: unspecified)
+                DetailRow(stringResource(R.string.detail_label_year), song.year?.toString() ?: unknown)
+                DetailRow(
+                    stringResource(R.string.detail_label_duration),
+                    formatDuration(song.songLength, song.songLengthMs),
+                )
+                DetailRow(stringResource(R.string.detail_label_format), song.format?.uppercase() ?: unknown)
             }
         }
 
@@ -254,7 +271,7 @@ private fun YargDetailContent(song: YargSongEntity) {
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Text(
-                        text = "Chart Source",
+                        text = stringResource(R.string.detail_section_chart_source),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -358,7 +375,8 @@ private fun InstrumentDifficultyRow(
                 fontWeight = FontWeight.Medium,
             )
             Text(
-                text = level?.let { "Tier $it / 6" } ?: "Not charted",
+                text = level?.let { stringResource(R.string.detail_instrument_tier, it) }
+                    ?: stringResource(R.string.detail_instrument_not_charted),
                 style = MaterialTheme.typography.labelMedium,
                 color = if (level != null) {
                     MaterialTheme.colorScheme.primary
@@ -379,11 +397,14 @@ private fun InstrumentDifficultyRow(
     }
 }
 
+@Composable
 private fun formatDuration(formatted: String?, lengthMs: Long?): String {
     return when {
-        formatted != null && lengthMs != null -> "$formatted (${lengthMs / 1000}s)"
+        formatted != null && lengthMs != null ->
+            stringResource(R.string.detail_duration_with_seconds, formatted, lengthMs / 1000)
         formatted != null -> formatted
-        lengthMs != null -> "${lengthMs / 1000}s"
-        else -> "Unknown"
+        lengthMs != null ->
+            stringResource(R.string.detail_duration_seconds_only, lengthMs / 1000)
+        else -> stringResource(R.string.value_unknown)
     }
 }

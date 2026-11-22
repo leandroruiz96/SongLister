@@ -8,6 +8,20 @@ import com.leandroleu96.songlister.data.repository.UltraStarFilterOptions
 import com.leandroleu96.songlister.data.repository.YargFilter
 import com.leandroleu96.songlister.data.repository.YargFilterOptions
 
+enum class InstrumentType {
+    GUITAR,
+    BASS,
+    DRUMS,
+    KEYS,
+    VOCALS,
+}
+
+sealed interface SongBadge {
+    data object Solo : SongBadge
+    data object Duet : SongBadge
+    data class Instrument(val type: InstrumentType, val level: Int) : SongBadge
+}
+
 data class SongListItemUi(
     val id: Long,
     val title: String,
@@ -16,7 +30,7 @@ data class SongListItemUi(
     val genre: String?,
     val year: Int?,
     val duration: String?,
-    val badges: List<String>,
+    val badges: List<SongBadge>,
 )
 
 data class SongListUiState(
@@ -39,8 +53,8 @@ data class SongListUiState(
 
 fun UltraStarSongEntity.toListItemUi(): SongListItemUi {
     val badges = buildList {
-        if (solo) add("Solo")
-        if (duet) add("Duet")
+        if (solo) add(SongBadge.Solo)
+        if (duet) add(SongBadge.Duet)
     }
     return SongListItemUi(
         id = id,
@@ -56,11 +70,11 @@ fun UltraStarSongEntity.toListItemUi(): SongListItemUi {
 
 fun YargSongEntity.toListItemUi(): SongListItemUi {
     val badges = buildList {
-        guitarLevel?.let { add("Guitar $it") }
-        bassLevel?.let { add("Bass $it") }
-        drumsLevel?.let { add("Drums $it") }
-        keysLevel?.let { add("Keys $it") }
-        vocalsLevel?.let { add("Vocals $it") }
+        guitarLevel?.let { add(SongBadge.Instrument(InstrumentType.GUITAR, it)) }
+        bassLevel?.let { add(SongBadge.Instrument(InstrumentType.BASS, it)) }
+        drumsLevel?.let { add(SongBadge.Instrument(InstrumentType.DRUMS, it)) }
+        keysLevel?.let { add(SongBadge.Instrument(InstrumentType.KEYS, it)) }
+        vocalsLevel?.let { add(SongBadge.Instrument(InstrumentType.VOCALS, it)) }
     }
     return SongListItemUi(
         id = id,

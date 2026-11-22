@@ -47,10 +47,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.leandroleu96.songlister.R
 import com.leandroleu96.songlister.data.repository.UltraStarFilter
 import com.leandroleu96.songlister.data.repository.YargFilter
 import java.text.NumberFormat
@@ -96,12 +98,14 @@ fun SongListScreenContent(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text("${uiState.gameType.displayName} Songs") },
+                title = {
+                    Text(stringResource(R.string.list_title, uiState.gameType.displayName))
+                },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
+                            contentDescription = stringResource(R.string.action_back),
                         )
                     }
                 },
@@ -118,7 +122,7 @@ fun SongListScreenContent(
                         } else {
                             Icon(
                                 imageVector = Icons.Default.Refresh,
-                                contentDescription = "Refresh songs",
+                                contentDescription = stringResource(R.string.list_refresh_description),
                             )
                         }
                     }
@@ -145,7 +149,7 @@ fun SongListScreenContent(
                 OutlinedTextField(
                     value = uiState.searchQuery,
                     onValueChange = onSearchQueryChange,
-                    placeholder = { Text("Search song or artist") },
+                    placeholder = { Text(stringResource(R.string.list_search_placeholder)) },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Search,
@@ -157,7 +161,7 @@ fun SongListScreenContent(
                             IconButton(onClick = { onSearchQueryChange("") }) {
                                 Icon(
                                     imageVector = Icons.Default.Close,
-                                    contentDescription = "Clear search",
+                                    contentDescription = stringResource(R.string.list_clear_search_description),
                                 )
                             }
                         }
@@ -179,7 +183,7 @@ fun SongListScreenContent(
                     ) {
                         Icon(
                             imageVector = Icons.Default.FilterList,
-                            contentDescription = "Open filters",
+                            contentDescription = stringResource(R.string.list_open_filters_description),
                         )
                     }
                 }
@@ -194,13 +198,16 @@ fun SongListScreenContent(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = "${numberFormat.format(uiState.songs.size)} songs",
+                    text = stringResource(
+                        R.string.list_songs_count,
+                        numberFormat.format(uiState.songs.size),
+                    ),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 if (uiState.activeFilterCount > 0) {
                     TextButton(onClick = onClearFilters) {
-                        Text("Clear filters (${uiState.activeFilterCount})")
+                        Text(stringResource(R.string.list_clear_filters, uiState.activeFilterCount))
                     }
                 }
             }
@@ -331,7 +338,7 @@ private fun SongListCard(
                             contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                         ) {
                             Text(
-                                text = badge,
+                                text = badgeLabel(badge),
                                 style = MaterialTheme.typography.labelSmall,
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
                             )
@@ -339,6 +346,24 @@ private fun SongListCard(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun badgeLabel(badge: SongBadge): String {
+    return when (badge) {
+        SongBadge.Solo -> stringResource(R.string.filter_solo)
+        SongBadge.Duet -> stringResource(R.string.filter_duet)
+        is SongBadge.Instrument -> {
+            val instrumentName = when (badge.type) {
+                InstrumentType.GUITAR -> stringResource(R.string.instrument_guitar)
+                InstrumentType.BASS -> stringResource(R.string.instrument_bass)
+                InstrumentType.DRUMS -> stringResource(R.string.instrument_drums)
+                InstrumentType.KEYS -> stringResource(R.string.instrument_keys)
+                InstrumentType.VOCALS -> stringResource(R.string.instrument_vocals)
+            }
+            stringResource(R.string.badge_instrument_level, instrumentName, badge.level)
         }
     }
 }
@@ -363,24 +388,24 @@ private fun EmptySongsState(
         )
         Spacer(modifier = Modifier.height(12.dp))
         Text(
-            text = if (hasFiltersOrQuery) "No matching songs" else "No songs available",
+            text = stringResource(
+                if (hasFiltersOrQuery) R.string.list_empty_filtered_title else R.string.list_empty_title,
+            ),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold,
         )
         Spacer(modifier = Modifier.height(6.dp))
         Text(
-            text = if (hasFiltersOrQuery) {
-                "Try adjusting your search or filter criteria."
-            } else {
-                "Tap refresh to download the song list."
-            },
+            text = stringResource(
+                if (hasFiltersOrQuery) R.string.list_empty_filtered_subtitle else R.string.list_empty_subtitle,
+            ),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         if (hasFiltersOrQuery) {
             Spacer(modifier = Modifier.height(12.dp))
             TextButton(onClick = onClearAll) {
-                Text("Clear search & filters")
+                Text(stringResource(R.string.list_clear_all))
             }
         }
     }

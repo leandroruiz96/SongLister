@@ -16,12 +16,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -35,9 +35,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.leandroleu96.songlister.R
 import com.leandroleu96.songlister.core.GameType
 import com.leandroleu96.songlister.data.repository.UltraStarFilter
 import com.leandroleu96.songlister.data.repository.UltraStarFilterOptions
@@ -100,7 +102,7 @@ private fun UltraStarFilterSheetContent(
             .padding(bottom = 28.dp),
     ) {
         FilterSheetHeader(
-            title = "UltraStar Filters",
+            title = stringResource(R.string.filter_ultrastar_title),
             onReset = {
                 draft = UltraStarFilter(query = draft.query)
                 minYearText = ""
@@ -116,14 +118,14 @@ private fun UltraStarFilterSheetContent(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             DropdownFilterField(
-                label = "Genre",
+                label = stringResource(R.string.filter_genre),
                 selectedValue = draft.genre,
                 options = options.genres,
                 onSelect = { draft = draft.copy(genre = it) },
             )
 
             DropdownFilterField(
-                label = "Language",
+                label = stringResource(R.string.filter_language),
                 selectedValue = draft.language,
                 options = options.languages,
                 onSelect = { draft = draft.copy(language = it) },
@@ -144,13 +146,13 @@ private fun UltraStarFilterSheetContent(
             )
 
             TriStateBooleanSection(
-                label = "Duet",
+                label = stringResource(R.string.filter_duet),
                 value = draft.duet,
                 onValueChange = { draft = draft.copy(duet = it) },
             )
 
             TriStateBooleanSection(
-                label = "Solo",
+                label = stringResource(R.string.filter_solo),
                 value = draft.solo,
                 onValueChange = { draft = draft.copy(solo = it) },
             )
@@ -186,7 +188,7 @@ private fun YargFilterSheetContent(
             .padding(bottom = 28.dp),
     ) {
         FilterSheetHeader(
-            title = "YARG Filters",
+            title = stringResource(R.string.filter_yarg_title),
             onReset = {
                 draft = YargFilter(query = draft.query)
                 minYearText = ""
@@ -202,7 +204,7 @@ private fun YargFilterSheetContent(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             DropdownFilterField(
-                label = "Genre",
+                label = stringResource(R.string.filter_genre),
                 selectedValue = draft.genre,
                 options = options.genres,
                 onSelect = { draft = draft.copy(genre = it) },
@@ -211,8 +213,8 @@ private fun YargFilterSheetContent(
             OutlinedTextField(
                 value = draft.album.orEmpty(),
                 onValueChange = { draft = draft.copy(album = it.ifBlank { null }) },
-                label = { Text("Album") },
-                placeholder = { Text("Filter by album name") },
+                label = { Text(stringResource(R.string.filter_album)) },
+                placeholder = { Text(stringResource(R.string.filter_album_placeholder)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -220,7 +222,7 @@ private fun YargFilterSheetContent(
             if (options.formats.isNotEmpty()) {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
-                        text = "Format",
+                        text = stringResource(R.string.filter_format),
                         style = MaterialTheme.typography.labelLarge,
                     )
                     FlowRow(
@@ -230,7 +232,7 @@ private fun YargFilterSheetContent(
                         FilterChip(
                             selected = draft.format == null,
                             onClick = { draft = draft.copy(format = null) },
-                            label = { Text("Any") },
+                            label = { Text(stringResource(R.string.option_any)) },
                         )
                         options.formats.forEach { format ->
                             FilterChip(
@@ -263,12 +265,12 @@ private fun YargFilterSheetContent(
 
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Text(
-                    text = "Instruments & Minimum Difficulty",
+                    text = stringResource(R.string.filter_instruments_title),
                     style = MaterialTheme.typography.labelLarge,
                 )
 
                 InstrumentFilterRow(
-                    label = "Guitar",
+                    label = stringResource(R.string.instrument_guitar),
                     enabled = draft.requireGuitar || draft.minGuitar != null,
                     minLevel = draft.minGuitar,
                     onToggle = { enabled ->
@@ -283,7 +285,7 @@ private fun YargFilterSheetContent(
                 )
 
                 InstrumentFilterRow(
-                    label = "Bass",
+                    label = stringResource(R.string.instrument_bass),
                     enabled = draft.requireBass || draft.minBass != null,
                     minLevel = draft.minBass,
                     onToggle = { enabled ->
@@ -298,7 +300,7 @@ private fun YargFilterSheetContent(
                 )
 
                 InstrumentFilterRow(
-                    label = "Drums",
+                    label = stringResource(R.string.instrument_drums),
                     enabled = draft.requireDrums || draft.minDrums != null,
                     minLevel = draft.minDrums,
                     onToggle = { enabled ->
@@ -313,7 +315,7 @@ private fun YargFilterSheetContent(
                 )
 
                 InstrumentFilterRow(
-                    label = "Keys",
+                    label = stringResource(R.string.instrument_keys),
                     enabled = draft.requireKeys || draft.minKeys != null,
                     minLevel = draft.minKeys,
                     onToggle = { enabled ->
@@ -328,7 +330,7 @@ private fun YargFilterSheetContent(
                 )
 
                 InstrumentFilterRow(
-                    label = "Vocals",
+                    label = stringResource(R.string.instrument_vocals),
                     enabled = draft.requireVocals || draft.minVocals != null,
                     minLevel = draft.minVocals,
                     onToggle = { enabled ->
@@ -373,7 +375,7 @@ private fun FilterSheetHeader(
             fontWeight = FontWeight.SemiBold,
         )
         TextButton(onClick = onReset) {
-            Text("Reset")
+            Text(stringResource(R.string.action_reset))
         }
     }
 }
@@ -391,13 +393,13 @@ private fun FilterSheetActions(
             onClick = onCancel,
             modifier = Modifier.weight(1f),
         ) {
-            Text("Cancel")
+            Text(stringResource(R.string.action_cancel))
         }
         Button(
             onClick = onApply,
             modifier = Modifier.weight(1f),
         ) {
-            Text("Apply Filters")
+            Text(stringResource(R.string.action_apply_filters))
         }
     }
 }
@@ -411,6 +413,7 @@ private fun DropdownFilterField(
     onSelect: (String?) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
+    val anyLabel = stringResource(R.string.option_any)
 
     ExposedDropdownMenuBox(
         expanded = expanded,
@@ -418,13 +421,13 @@ private fun DropdownFilterField(
         modifier = Modifier.fillMaxWidth(),
     ) {
         OutlinedTextField(
-            value = selectedValue ?: "Any",
+            value = selectedValue ?: anyLabel,
             onValueChange = {},
             readOnly = true,
             label = { Text(label) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier
-                .menuAnchor(MenuAnchorType.PrimaryNotEditable)
+                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
                 .fillMaxWidth(),
         )
         ExposedDropdownMenu(
@@ -432,7 +435,7 @@ private fun DropdownFilterField(
             onDismissRequest = { expanded = false },
         ) {
             DropdownMenuItem(
-                text = { Text("Any") },
+                text = { Text(anyLabel) },
                 onClick = {
                     onSelect(null)
                     expanded = false
@@ -459,12 +462,12 @@ private fun YearRangeSection(
     onMinYearChange: (String) -> Unit,
     onMaxYearChange: (String) -> Unit,
 ) {
-    val minHint = availableYears.firstOrNull()?.toString() ?: "e.g. 1980"
-    val maxHint = availableYears.lastOrNull()?.toString() ?: "e.g. 2025"
+    val minHint = availableYears.firstOrNull()?.toString() ?: stringResource(R.string.filter_year_min_hint)
+    val maxHint = availableYears.lastOrNull()?.toString() ?: stringResource(R.string.filter_year_max_hint)
 
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(
-            text = "Year Range",
+            text = stringResource(R.string.filter_year_range),
             style = MaterialTheme.typography.labelLarge,
         )
         Row(
@@ -474,7 +477,7 @@ private fun YearRangeSection(
             OutlinedTextField(
                 value = minYearText,
                 onValueChange = onMinYearChange,
-                label = { Text("From") },
+                label = { Text(stringResource(R.string.filter_year_from)) },
                 placeholder = { Text(minHint) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -483,7 +486,7 @@ private fun YearRangeSection(
             OutlinedTextField(
                 value = maxYearText,
                 onValueChange = onMaxYearChange,
-                label = { Text("To") },
+                label = { Text(stringResource(R.string.filter_year_to)) },
                 placeholder = { Text(maxHint) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -508,17 +511,17 @@ private fun TriStateBooleanSection(
             FilterChip(
                 selected = value == null,
                 onClick = { onValueChange(null) },
-                label = { Text("Any") },
+                label = { Text(stringResource(R.string.option_any)) },
             )
             FilterChip(
                 selected = value == true,
                 onClick = { onValueChange(true) },
-                label = { Text("Yes") },
+                label = { Text(stringResource(R.string.option_yes)) },
             )
             FilterChip(
                 selected = value == false,
                 onClick = { onValueChange(false) },
-                label = { Text("No") },
+                label = { Text(stringResource(R.string.option_no)) },
             )
         }
     }
@@ -543,7 +546,8 @@ private fun InstrumentFilterRow(
             if (enabled) {
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = minLevel?.let { "Difficulty $it+" } ?: "Any difficulty",
+                    text = minLevel?.let { stringResource(R.string.filter_difficulty_min, it) }
+                        ?: stringResource(R.string.filter_difficulty_any),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -556,13 +560,13 @@ private fun InstrumentFilterRow(
                 FilterChip(
                     selected = minLevel == null,
                     onClick = { onMinLevelChange(null) },
-                    label = { Text("Any") },
+                    label = { Text(stringResource(R.string.option_any)) },
                 )
                 (1..6).forEach { tier ->
                     FilterChip(
                         selected = minLevel == tier,
                         onClick = { onMinLevelChange(tier) },
-                        label = { Text("$tier+") },
+                        label = { Text(stringResource(R.string.filter_tier_plus, tier)) },
                     )
                 }
             }

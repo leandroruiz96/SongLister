@@ -36,10 +36,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.leandroleu96.songlister.R
 import com.leandroleu96.songlister.core.GameType
 import com.leandroleu96.songlister.data.repository.GameSyncStatus
 import com.leandroleu96.songlister.ui.theme.SongListerTheme
@@ -73,7 +75,7 @@ fun HomeScreenContent(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text("SongLister") },
+                title = { Text(stringResource(R.string.app_name)) },
                 actions = {
                     IconButton(
                         onClick = onRefresh,
@@ -87,7 +89,7 @@ fun HomeScreenContent(
                         } else {
                             Icon(
                                 imageVector = Icons.Default.Refresh,
-                                contentDescription = "Refresh song lists",
+                                contentDescription = stringResource(R.string.home_refresh_description),
                             )
                         }
                     }
@@ -109,13 +111,13 @@ fun HomeScreenContent(
             SyncStatusBanner(uiState = uiState)
 
             Text(
-                text = "Choose a Game",
+                text = stringResource(R.string.home_choose_game_title),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.SemiBold,
             )
 
             Text(
-                text = "Select a library to search and filter songs offline.",
+                text = stringResource(R.string.home_choose_game_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -124,14 +126,14 @@ fun HomeScreenContent(
 
             GameSelectionCard(
                 state = uiState.ultraStar,
-                subtitle = "Karaoke & vocal tracks",
+                subtitle = stringResource(R.string.home_ultrastar_subtitle),
                 icon = Icons.Default.Mic,
                 onClick = { onSelectGame(GameType.ULTRASTAR) },
             )
 
             GameSelectionCard(
                 state = uiState.yarg,
-                subtitle = "Full-band rhythm charts",
+                subtitle = stringResource(R.string.home_yarg_subtitle),
                 icon = Icons.Default.MusicNote,
                 onClick = { onSelectGame(GameType.YARG) },
             )
@@ -141,28 +143,28 @@ fun HomeScreenContent(
 
 @Composable
 private fun SyncStatusBanner(uiState: HomeUiState) {
-    val (icon, message, containerColor, contentColor) = when {
+    val style = when {
         uiState.isSyncing -> StatusStyle(
             icon = Icons.Default.Refresh,
-            message = "Checking for song list updates...",
+            message = stringResource(R.string.home_sync_checking),
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
             contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
         )
         uiState.hasAnyError -> StatusStyle(
             icon = Icons.Default.ErrorOutline,
-            message = "Could not sync one or more lists. Tap refresh to retry.",
+            message = stringResource(R.string.home_sync_error),
             containerColor = MaterialTheme.colorScheme.errorContainer,
             contentColor = MaterialTheme.colorScheme.onErrorContainer,
         )
         uiState.isOfflineCached -> StatusStyle(
             icon = Icons.Default.CloudOff,
-            message = "Offline mode — showing cached local song lists.",
+            message = stringResource(R.string.home_sync_offline),
             containerColor = MaterialTheme.colorScheme.tertiaryContainer,
             contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
         )
         uiState.ultraStar.syncStatus != null || uiState.yarg.syncStatus != null -> StatusStyle(
             icon = Icons.Default.CloudDone,
-            message = "Song libraries are synced and ready offline.",
+            message = stringResource(R.string.home_sync_ready),
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
         )
@@ -171,8 +173,8 @@ private fun SyncStatusBanner(uiState: HomeUiState) {
 
     Surface(
         shape = MaterialTheme.shapes.medium,
-        color = containerColor,
-        contentColor = contentColor,
+        color = style.containerColor,
+        contentColor = style.contentColor,
         modifier = Modifier.fillMaxWidth(),
     ) {
         Row(
@@ -180,13 +182,13 @@ private fun SyncStatusBanner(uiState: HomeUiState) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
-                imageVector = icon,
+                imageVector = style.icon,
                 contentDescription = null,
                 modifier = Modifier.size(18.dp),
             )
             Spacer(modifier = Modifier.width(10.dp))
             Text(
-                text = message,
+                text = style.message,
                 style = MaterialTheme.typography.bodySmall,
             )
         }
@@ -208,12 +210,13 @@ private fun GameSelectionCard(
     onClick: () -> Unit,
 ) {
     val numberFormat = NumberFormat.getIntegerInstance(Locale.getDefault())
-    val countLabel = if (state.songCount > 0) {
-        "${numberFormat.format(state.songCount)} songs cached"
-    } else if (state.syncStatus == GameSyncStatus.ERROR) {
-        "Download failed"
-    } else {
-        "Not downloaded yet"
+    val countLabel = when {
+        state.songCount > 0 -> stringResource(
+            R.string.home_songs_cached,
+            numberFormat.format(state.songCount),
+        )
+        state.syncStatus == GameSyncStatus.ERROR -> stringResource(R.string.home_download_failed)
+        else -> stringResource(R.string.home_not_downloaded)
     }
 
     ElevatedCard(
@@ -269,7 +272,10 @@ private fun GameSelectionCard(
 
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                contentDescription = "Open ${state.gameType.displayName}",
+                contentDescription = stringResource(
+                    R.string.home_open_game_description,
+                    state.gameType.displayName,
+                ),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
