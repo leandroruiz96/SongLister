@@ -19,7 +19,7 @@ interface YargSongDao {
         SELECT * FROM yarg_songs
         WHERE (:query = '' OR name LIKE '%' || :query || '%' OR artist LIKE '%' || :query || '%')
           AND (:genre IS NULL OR genre = :genre)
-          AND (:album IS NULL OR album = :album)
+          AND (:album IS NULL OR album LIKE '%' || :album || '%')
           AND (:format IS NULL OR format = :format)
           AND (:minYear IS NULL OR year >= :minYear)
           AND (:maxYear IS NULL OR year <= :maxYear)

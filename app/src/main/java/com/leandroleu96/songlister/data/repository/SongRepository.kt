@@ -16,6 +16,12 @@ interface SongRepository {
     fun observeUltraStarSongs(): Flow<List<UltraStarSongEntity>>
     fun observeYargSongs(): Flow<List<YargSongEntity>>
 
+    fun observeFilteredUltraStarSongs(filter: UltraStarFilter): Flow<List<UltraStarSongEntity>>
+    fun observeFilteredYargSongs(filter: YargFilter): Flow<List<YargSongEntity>>
+
+    fun observeUltraStarFilterOptions(): Flow<UltraStarFilterOptions>
+    fun observeYargFilterOptions(): Flow<YargFilterOptions>
+
     suspend fun getUltraStarSong(id: Long): UltraStarSongEntity?
     suspend fun getYargSong(id: Long): YargSongEntity?
 }

@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
@@ -200,6 +201,71 @@ class DefaultSongRepository(
 
     override fun observeYargSongs(): Flow<List<YargSongEntity>> {
         return yargSongDao.observeAll()
+    }
+
+    override fun observeFilteredUltraStarSongs(
+        filter: UltraStarFilter,
+    ): Flow<List<UltraStarSongEntity>> {
+        return ultraStarSongDao.observeFiltered(
+            query = filter.query.trim(),
+            genre = filter.genre?.takeIf { it.isNotBlank() },
+            language = filter.language?.takeIf { it.isNotBlank() },
+            minYear = filter.minYear,
+            maxYear = filter.maxYear,
+            duet = filter.duet,
+            solo = filter.solo,
+        )
+    }
+
+    override fun observeFilteredYargSongs(
+        filter: YargFilter,
+    ): Flow<List<YargSongEntity>> {
+        return yargSongDao.observeFiltered(
+            query = filter.query.trim(),
+            genre = filter.genre?.takeIf { it.isNotBlank() },
+            album = filter.album?.trim()?.takeIf { it.isNotBlank() },
+            format = filter.format?.takeIf { it.isNotBlank() },
+            minYear = filter.minYear,
+            maxYear = filter.maxYear,
+            requireGuitar = filter.requireGuitar || filter.minGuitar != null,
+            minGuitar = filter.minGuitar,
+            requireBass = filter.requireBass || filter.minBass != null,
+            minBass = filter.minBass,
+            requireDrums = filter.requireDrums || filter.minDrums != null,
+            minDrums = filter.minDrums,
+            requireKeys = filter.requireKeys || filter.minKeys != null,
+            minKeys = filter.minKeys,
+            requireVocals = filter.requireVocals || filter.minVocals != null,
+            minVocals = filter.minVocals,
+        )
+    }
+
+    override fun observeUltraStarFilterOptions(): Flow<UltraStarFilterOptions> {
+        return combine(
+            ultraStarSongDao.observeDistinctGenres(),
+            ultraStarSongDao.observeDistinctLanguages(),
+            ultraStarSongDao.observeDistinctYears(),
+        ) { genres, languages, years ->
+            UltraStarFilterOptions(
+                genres = genres,
+                languages = languages,
+                years = years,
+            )
+        }
+    }
+
+    override fun observeYargFilterOptions(): Flow<YargFilterOptions> {
+        return combine(
+            yargSongDao.observeDistinctGenres(),
+            yargSongDao.observeDistinctFormats(),
+            yargSongDao.observeDistinctYears(),
+        ) { genres, formats, years ->
+            YargFilterOptions(
+                genres = genres,
+                formats = formats,
+                years = years,
+            )
+        }
     }
 
     override suspend fun getUltraStarSong(id: Long): UltraStarSongEntity? {

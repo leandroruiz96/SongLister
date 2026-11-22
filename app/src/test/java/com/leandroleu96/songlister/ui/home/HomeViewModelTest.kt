@@ -1,16 +1,11 @@
 package com.leandroleu96.songlister.ui.home
 
 import com.leandroleu96.songlister.core.GameType
-import com.leandroleu96.songlister.data.local.entity.SyncMetadataEntity
-import com.leandroleu96.songlister.data.local.entity.UltraStarSongEntity
-import com.leandroleu96.songlister.data.local.entity.YargSongEntity
 import com.leandroleu96.songlister.data.repository.GameSyncResult
 import com.leandroleu96.songlister.data.repository.GameSyncStatus
-import com.leandroleu96.songlister.data.repository.SongRepository
+import com.leandroleu96.songlister.testutil.FakeSongRepository
 import com.leandroleu96.songlister.testutil.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -108,37 +103,4 @@ class HomeViewModelTest {
 
         collectJob.cancel()
     }
-}
-
-private class FakeSongRepository(
-    var nextSyncResults: Map<GameType, GameSyncResult>,
-) : SongRepository {
-
-    val syncAllCalls = mutableListOf<Boolean>()
-    private val ultraStarCount = MutableStateFlow(0)
-    private val yargCount = MutableStateFlow(0)
-    private val metadata = MutableStateFlow<Map<GameType, SyncMetadataEntity>>(emptyMap())
-
-    override suspend fun syncGame(gameType: GameType, forceRefresh: Boolean): GameSyncResult {
-        return nextSyncResults.getValue(gameType)
-    }
-
-    override suspend fun syncAll(forceRefresh: Boolean): Map<GameType, GameSyncResult> {
-        syncAllCalls.add(forceRefresh)
-        nextSyncResults[GameType.ULTRASTAR]?.let { ultraStarCount.value = it.songCount }
-        nextSyncResults[GameType.YARG]?.let { yargCount.value = it.songCount }
-        return nextSyncResults
-    }
-
-    override fun observeSyncMetadata(): Flow<Map<GameType, SyncMetadataEntity>> = metadata
-
-    override fun observeSongCount(gameType: GameType): Flow<Int> = when (gameType) {
-        GameType.ULTRASTAR -> ultraStarCount
-        GameType.YARG -> yargCount
-    }
-
-    override fun observeUltraStarSongs(): Flow<List<UltraStarSongEntity>> = MutableStateFlow(emptyList())
-    override fun observeYargSongs(): Flow<List<YargSongEntity>> = MutableStateFlow(emptyList())
-    override suspend fun getUltraStarSong(id: Long): UltraStarSongEntity? = null
-    override suspend fun getYargSong(id: Long): YargSongEntity? = null
 }

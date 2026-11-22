@@ -1,18 +1,6 @@
 package com.leandroleu96.songlister.ui.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -21,10 +9,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.leandroleu96.songlister.core.AppContainer
+import com.leandroleu96.songlister.ui.detail.SongDetailScreen
+import com.leandroleu96.songlister.ui.detail.SongDetailViewModel
 import com.leandroleu96.songlister.ui.home.HomeScreen
 import com.leandroleu96.songlister.ui.home.HomeViewModel
+import com.leandroleu96.songlister.ui.list.SongListScreen
+import com.leandroleu96.songlister.ui.list.SongListViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SongListerNavHost(
     appContainer: AppContainer,
@@ -50,58 +41,42 @@ fun SongListerNavHost(
 
         composable<SongListRoute> { backStackEntry ->
             val route: SongListRoute = backStackEntry.toRoute()
-            Scaffold(
-                topBar = {
-                    TopAppBar(
-                        title = { Text("${route.gameType.displayName} Songs") },
-                        navigationIcon = {
-                            IconButton(onClick = { navController.popBackStack() }) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                    contentDescription = "Back",
-                                )
-                            }
-                        },
+            val listViewModel: SongListViewModel = viewModel(
+                key = "song_list_${route.gameType.name}",
+                factory = SongListViewModel.provideFactory(
+                    gameType = route.gameType,
+                    repository = appContainer.songRepository,
+                ),
+            )
+            SongListScreen(
+                viewModel = listViewModel,
+                onNavigateBack = { navController.popBackStack() },
+                onSelectSong = { songId ->
+                    navController.navigate(
+                        SongDetailRoute(
+                            gameType = route.gameType,
+                            songId = songId,
+                        ),
                     )
                 },
-            ) { innerPadding ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text("Song list for ${route.gameType.displayName} (coming in Step 4)")
-                }
-            }
+            )
         }
 
         composable<SongDetailRoute> { backStackEntry ->
             val route: SongDetailRoute = backStackEntry.toRoute()
-            Scaffold(
-                topBar = {
-                    TopAppBar(
-                        title = { Text("Song Details") },
-                        navigationIcon = {
-                            IconButton(onClick = { navController.popBackStack() }) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                    contentDescription = "Back",
-                                )
-                            }
-                        },
-                    )
-                },
-            ) { innerPadding ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text("Details for ${route.gameType.displayName} #${route.songId} (coming in Step 6)")
-                }
-            }
+            val detailViewModel: SongDetailViewModel = viewModel(
+                key = "song_detail_${route.gameType.name}_${route.songId}",
+                factory = SongDetailViewModel.provideFactory(
+                    gameType = route.gameType,
+                    songId = route.songId,
+                    repository = appContainer.songRepository,
+                ),
+            )
+            SongDetailScreen(
+                gameType = route.gameType,
+                viewModel = detailViewModel,
+                onNavigateBack = { navController.popBackStack() },
+            )
         }
     }
 }
